@@ -1,3 +1,5 @@
 *__pycache__*
 pretrained
 *.png
+run*
+test_only.py
