@@ -31,7 +31,7 @@ class ReIDTrainer:
         self.scheduler = lr_scheduler
 
 
-    def fit(self, train_loader, test_set, epochs, gt_index_path, name_query_path, jk_index_path, save_dir=None):
+    def fit(self, train_loader, test_set, epochs, gt_index_path, name_query_path, jk_index_path, save_dir=None, check_init=False):
         '''
             Train the model for `epochs` epochs, where each epoch is composed of a training step and a testing step 
 
@@ -41,6 +41,7 @@ class ReIDTrainer:
                 gt_index_path (str): the path to gt_index.txt under veri776 root folder
                 name_query_path (str): the path to name_query.txt under veri776 root folder
                 save_dir (str): path to save the model
+                check_init (boolean): if true, then test the model with initial weight
         '''
 
         # if the save if provided and the path hasn't existed yet
@@ -53,13 +54,23 @@ class ReIDTrainer:
         jk_indices = self.get_label_indices(jk_index_path)
 
 
+        if check_init:
+            print('check init')
+            self.test(
+                test_set=test_set, 
+                gt_indices=gt_indices, 
+                jk_indices=jk_indices, 
+                name_queries=name_queries
+            )
+
+
         for epoch in range(epochs):
             self.train(train_loader)
 
             if self.scheduler is not None:
                 self.scheduler.step()
 
-            if save_dir and (epoch == 0 or (epoch + 1) % 5 == 0):
+            if save_dir and (epoch == 0 or (epoch + 1) % 3 == 0):
                 torch.save(self.net, os.path.join(save_dir, f'{epoch}.pth'))
                 self.test(
                     test_set=test_set, 

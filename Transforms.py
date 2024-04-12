@@ -10,7 +10,7 @@ IMAGE_SIZE = 256
 def get_training_transform():
     transform = transforms.Compose([
         transforms.ToTensor(),          
-        transforms.Resize((IMAGE_SIZE, IMAGE_SIZE)),  # Resize the image to IMAGE_SIZE*IMAGE_SIZE
+        transforms.Resize((IMAGE_SIZE, IMAGE_SIZE), antialias=True),  # Resize the image to IMAGE_SIZE*IMAGE_SIZE
         transforms.RandomHorizontalFlip(),
         transforms.Normalize(IMAGENET_MEAN, IMAGENET_STD),
         transforms.RandomErasing(scale=(0.02, 0.4)), # BoT setting
@@ -22,7 +22,7 @@ def get_training_transform():
 def get_test_transform():
     transform = transforms.Compose([
         transforms.ToTensor(),          
-        transforms.Resize((IMAGE_SIZE, IMAGE_SIZE)),  # Resize the image to IMAGE_SIZE*IMAGE_SIZE
+        transforms.Resize((IMAGE_SIZE, IMAGE_SIZE), antialias=True),  # Resize the image to IMAGE_SIZE*IMAGE_SIZE
         transforms.Normalize(IMAGENET_MEAN, IMAGENET_STD),
     ])
 

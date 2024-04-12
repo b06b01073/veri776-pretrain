@@ -22,6 +22,7 @@ if __name__ == '__main__':
     parser.add_argument('--smoothing', type=float, default=0)
     parser.add_argument('--margin', '-m', type=float, default=0.6)
     parser.add_argument('--save_dir', '-s', type=str)
+    parser.add_argument('--check_init', action='store_true')
 
     args = parser.parse_args()
 
@@ -76,4 +77,5 @@ if __name__ == '__main__':
         jk_index_path=os.path.join(args.dataset, 'jk_index.txt'),
         epochs=args.epochs,
         save_dir=args.save_dir,
+        check_init=args.check_init
     )
