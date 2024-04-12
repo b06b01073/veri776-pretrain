@@ -3,3 +3,5 @@ pretrained
 *.png
 run*
 test_only.py
+*.mp4
+*.jpg

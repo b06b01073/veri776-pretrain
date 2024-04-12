@@ -8,7 +8,7 @@ class ReIDTrainer:
     '''
         A wrapper class that launches the training process 
     '''
-    def __init__(self, net, ce_loss_fn, triplet_loss_fn, optimizer, lr_scheduler=None, log_file=None, device='cpu'):
+    def __init__(self, net, ce_loss_fn=None, triplet_loss_fn=None, optimizer=None, lr_scheduler=None, log_file=None, device='cpu'):
         '''
             Args: 
                 net (nn.Module): the network to be trained 
@@ -59,7 +59,7 @@ class ReIDTrainer:
             if self.scheduler is not None:
                 self.scheduler.step()
 
-            if save_dir and (epoch == 0 or (epoch + 1) % 10 == 0):
+            if save_dir and (epoch == 0 or (epoch + 1) % 5 == 0):
                 torch.save(self.net, os.path.join(save_dir, f'{epoch}.pth'))
                 self.test(
                     test_set=test_set, 
@@ -199,7 +199,7 @@ class ReIDTrainer:
 
         while query_ptr < len(name_queries) and img_ptr < len(img_file_names):
             if name_queries[query_ptr] == img_file_names[img_ptr]:
-                indices[name_queries[query_ptr]] = img_ptr
+                indices[name_queries[query_ptr]] = img_ptr + 1 # the query, ground truth, ..., should be 1-indexed
                 query_ptr += 1
                 img_ptr += 1
             else:

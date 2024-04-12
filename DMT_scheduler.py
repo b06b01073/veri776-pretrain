@@ -1,5 +1,4 @@
 WARMUP_EPOCH = 10
-DECAY_EPOCH = [40, 70]
 DECAY_FACTOR = 0.1
 from torch.optim.lr_scheduler import LambdaLR
 
@@ -10,9 +9,9 @@ def warmup_schedule(epoch):
         return 1
 
 def decay_schedule(epoch):
-    if epoch < 40: 
+    if epoch < 30: 
         return 1
-    if 40 <= epoch < 70:
+    if 30 <= epoch < 40:
         return  DECAY_FACTOR 
 
     return DECAY_FACTOR ** 2 

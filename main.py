@@ -19,7 +19,7 @@ if __name__ == '__main__':
     parser.add_argument('--batch_size', '-b', type=int, default=16) # -b=20 is the limit on my machine
     parser.add_argument('--embedding_dim', type=int, default=2048)
     parser.add_argument('--lr', '-l', type=float, default=1e-2)
-    parser.add_argument('--epochs', '-e', type=int, default=80)
+    parser.add_argument('--epochs', '-e', type=int, default=50)
     parser.add_argument('--smoothing', type=float, default=0)
     parser.add_argument('--margin', '-m', type=float, default=0.6)
     parser.add_argument('--save_dir', '-s', type=str)
@@ -50,6 +50,10 @@ if __name__ == '__main__':
     #         if layer in name:
     #             param.requires_grad = False
 
+    # for name, module in net.named_modules():
+    #     if any(layer in name for layer in freezed_layers):
+    #         if isinstance(module, torch.nn.BatchNorm2d):
+    #             module.track_running_stats = False
 
 
     # Trainer
