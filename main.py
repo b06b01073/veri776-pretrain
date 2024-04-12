@@ -17,7 +17,6 @@ if __name__ == '__main__':
     parser.add_argument('--dataset', type=str, default='../veri776')
     parser.add_argument('--workers', type=int, default=8)
     parser.add_argument('--batch_size', '-b', type=int, default=16) # -b=20 is the limit on my machine
-    parser.add_argument('--embedding_dim', type=int, default=2048)
     parser.add_argument('--lr', '-l', type=float, default=1e-2)
     parser.add_argument('--epochs', '-e', type=int, default=50)
     parser.add_argument('--smoothing', type=float, default=0)
@@ -41,7 +40,7 @@ if __name__ == '__main__':
     )
 
     # neural network
-    net = Resnet101IbnA(embedding_dim=args.embedding_dim, num_classes=576)
+    net = Resnet101IbnA(num_classes=576)
     
 
     # freezed_layers = ['layer1', 'layer2', 'layer3']

@@ -26,10 +26,14 @@ def weights_init_classifier(m):
 
 
 class Resnet101IbnA(nn.Module):
-    def __init__(self, num_classes=576, embedding_dim=2048):
+    def __init__(self, num_classes=576):
         super().__init__()
         self.resnet101_ibn_a = torch.hub.load('XingangPan/IBN-Net', 'resnet101_ibn_a', pretrained=True)
+        
+        embedding_dim = self.resnet101_ibn_a.fc.in_features
+        
         self.resnet101_ibn_a.fc = nn.Identity() # pretend the last layer does not exist
+
 
 
         self.bottleneck = nn.BatchNorm1d(embedding_dim)
