@@ -19,11 +19,18 @@ def get_training_transform():
     return transform
 
 
-def get_test_transform():
-    transform = transforms.Compose([
-        transforms.ToTensor(),          
-        transforms.Resize((IMAGE_SIZE, IMAGE_SIZE), antialias=True),  # Resize the image to IMAGE_SIZE*IMAGE_SIZE
-        transforms.Normalize(IMAGENET_MEAN, IMAGENET_STD),
-    ])
+def get_test_transform(equalized=False):
 
-    return transform
+    if equalized:
+        return transforms.Compose([
+            transforms.RandomEqualize(p=1),        
+            transforms.ToTensor(),  
+            transforms.Resize((IMAGE_SIZE, IMAGE_SIZE), antialias=True),  # Resize the image to IMAGE_SIZE*IMAGE_SIZE
+            transforms.Normalize(IMAGENET_MEAN, IMAGENET_STD),
+        ])
+    else:
+        return transforms.Compose([
+            transforms.ToTensor(),          
+            transforms.Resize((IMAGE_SIZE, IMAGE_SIZE), antialias=True),  # Resize the image to IMAGE_SIZE*IMAGE_SIZE
+            transforms.Normalize(IMAGENET_MEAN, IMAGENET_STD),
+        ])

@@ -2,7 +2,7 @@ from argparse import ArgumentParser
 import veri776
 import Transforms
 from termcolor import cprint
-from model import Resnet101IbnA
+from model import make_model
 from Trainer import ReIDTrainer
 from torch.optim import SGD
 import os
@@ -23,6 +23,7 @@ if __name__ == '__main__':
     parser.add_argument('--margin', '-m', type=float, default=0.6)
     parser.add_argument('--save_dir', '-s', type=str)
     parser.add_argument('--check_init', action='store_true')
+    parser.add_argument('--backbone', type=str, choices=['resnet', 'resnext'])
 
     args = parser.parse_args()
 
@@ -41,19 +42,9 @@ if __name__ == '__main__':
     )
 
     # neural network
-    net = Resnet101IbnA(num_classes=576)
-    
+    net = make_model(backbone=args.backbone, num_classes=576)
+    print(net)
 
-    # freezed_layers = ['layer1', 'layer2', 'layer3']
-    # for name, param in net.named_parameters():
-    #     for layer in freezed_layers:
-    #         if layer in name:
-    #             param.requires_grad = False
-
-    # for name, module in net.named_modules():
-    #     if any(layer in name for layer in freezed_layers):
-    #         if isinstance(module, torch.nn.BatchNorm2d):
-    #             module.track_running_stats = False
 
 
     # Trainer

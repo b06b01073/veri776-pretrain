@@ -1,7 +1,11 @@
 *__pycache__*
 pretrained
 *.png
-run*
+*run*
 test_only.py
 *.mp4
 *.jpg
+resnext
+contest.py
+ContestModel.py
+distance_distribution.py
