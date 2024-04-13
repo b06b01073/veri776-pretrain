@@ -26,7 +26,7 @@ def get_class_imgs(xml_path, cls):
 
 
 
-def visualize(X, y):
+def visualize(X, y, out):
     '''
         X: a list of embedding features
         y: the corresponding label
@@ -39,7 +39,7 @@ def visualize(X, y):
     plt.title('t-SNE Visualization')
     plt.xlabel('Dimension 1')
     plt.ylabel('Dimension 2')
-    plt.savefig('tsne.png')
+    plt.savefig(out)
 
     plt.show()
 
@@ -62,19 +62,19 @@ def get_data(model_params, vehicle_ids, xml_path):
         for img in tqdm(cls_imgs, dynamic_ncols=True, desc=f'id: {id}'):
             input = Image.open(img)
             input = test_transform(input)
-            feat, _, _ = net(input.unsqueeze(dim=0))
+            eu_feat, cos_feat, _ = net(input.unsqueeze(dim=0))
             
             y.append(id)
-            X.append(feat.squeeze().numpy())
+            X.append(eu_feat.squeeze().numpy())
 
     return X, y
 
 
-def run_tsne(model_params, vehicle_ids, xml_path):
+def run_tsne(model_params, vehicle_ids, xml_path, out):
     X, y = get_data(model_params, vehicle_ids, xml_path)    
 
     
-    visualize(np.array(X), np.array(y))
+    visualize(np.array(X), np.array(y), out)
 
 
 
@@ -83,11 +83,13 @@ def run_tsne(model_params, vehicle_ids, xml_path):
 if __name__ == '__main__':
     parser = ArgumentParser()
     parser.add_argument('--params', '-p', type=str, default='run3/9.pth')
-    parser.add_argument('--ids', nargs='+', default=[2, 5, 9, 14, 546, 653, 768, 38, 42, 402])
+    parser.add_argument('--ids', nargs='+', default=[2, 5, 9, 14, 546, 653, 768, 38, 42, 402, 421, 281, 776, 150])
     parser.add_argument('--xml_path', '-x', type=str, default='../veri776/test_label.xml')
+    parser.add_argument('--out', type=str)
+
 
     args = parser.parse_args()
 
     ids = [int(id) for id in args.ids]
 
-    run_tsne(args.params, ids, args.xml_path)
+    run_tsne(args.params, ids, args.xml_path, args.out)
