@@ -8,7 +8,7 @@ class ReIDTrainer:
     '''
         A wrapper class that launches the training process 
     '''
-    def __init__(self, net, ce_loss_fn=None, triplet_loss_fn=None, optimizer=None, lr_scheduler=None, log_file=None, device='cpu'):
+    def __init__(self, net, ce_loss_fn=None, triplet_loss_fn=None, optimizer=None, lr_scheduler=None, device='cpu'):
         '''
             Args: 
                 net (nn.Module): the network to be trained 
@@ -16,7 +16,6 @@ class ReIDTrainer:
                 triplet_loss_fn (TripletMarginLoss): triplet loss function from Pytorch
                 optimizer (torch.optim): optimizer for `net`
                 lr_scheduler (torch.optim.lr_scheduler): scheduler for `optimizer`
-                log_file (str): the file to store the intermediate performance 
                 device (str, 'cuda' or 'cpu'): the device to train the model 
         '''
         self.device = device

@@ -30,6 +30,7 @@ def parse_xml(xml_path):
                 cur_class += 1
 
         return image_paths, vehicle_ids, class_map
+    
 
 
 def get_veri776_train(veri776_path, num_workers=6, batch_size=32, transform=None):
@@ -119,14 +120,3 @@ class Veri776Train(Dataset):
         return np.random.choice(numbers)
     
 
-if __name__ == '__main__':
-    # test script, refrain from running this file
-    import Transforms
-    import torchvision
-    import einops
-    veri776_train, _ = get_veri776('../veri776', training_transform=Transforms.get_training_transform(), batch_size=10, num_workers=1)
-    X, y = next(iter(veri776_train))
-    X = einops.rearrange(X, 'b t c h w -> (b t) c h w')
-    print(len(X))
-    grid_image = torchvision.utils.make_grid(X, nrow=3)
-    torchvision.utils.save_image(grid_image, 'test.png')
