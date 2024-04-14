@@ -13,6 +13,7 @@ def get_training_transform():
         transforms.Resize((IMAGE_SIZE, IMAGE_SIZE), antialias=True),  # Resize the image to IMAGE_SIZE*IMAGE_SIZE
         transforms.RandomHorizontalFlip(),
         transforms.Normalize(IMAGENET_MEAN, IMAGENET_STD),
+        transforms.RandomCrop((IMAGE_SIZE, IMAGE_SIZE), padding=(8, 8)),
         transforms.RandomErasing(scale=(0.02, 0.4)), # BoT setting
     ])
 
