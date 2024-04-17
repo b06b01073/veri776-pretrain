@@ -1,0 +1,11 @@
+einops==0.7.0
+matplotlib==3.7.2
+numpy==1.23.5
+opencv_python==4.9.0.80
+opencv_python_headless==4.8.0.74
+Pillow==10.3.0
+scikit_learn==1.2.1
+termcolor==2.4.0
+torch==2.0.1
+torchvision==0.15.2
+tqdm==4.64.1
