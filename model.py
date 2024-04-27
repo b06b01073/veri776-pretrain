@@ -1,7 +1,10 @@
 import torch.nn as nn
 import torch
 
-
+import os
+import torch.nn.functional as F
+from collections import OrderedDict
+import DenseNet
 
 
 def weights_init_kaiming(m):
@@ -62,14 +65,17 @@ class Resnet101IbnA(nn.Module):
 
 
 class IBN_A(nn.Module):
-    def __init__(self, backbone, num_classes=576):
+    def __init__(self, backbone='pretrained', num_classes=576, embedding_dim=2048):
         super().__init__()
         self.backbone = get_backbone(backbone)
-        
-        embedding_dim = self.backbone.fc.in_features
-        
-        self.backbone.fc = nn.Identity() # pretend the last layer does not exist
+        print(self.backbone)
 
+
+        # the expected embedding space is \mathbb{R}^{2048}. resnet, seresnet, resnext satisfy this automatically
+        if backbone == 'densenet':
+            self.backbone.classifier = nn.Linear(self.backbone.classifier.in_features, embedding_dim)
+        else:
+            self.backbone.fc = nn.Identity() # pretend the last layer does not exist
 
 
         self.bottleneck = nn.BatchNorm1d(embedding_dim)
@@ -99,6 +105,13 @@ def get_backbone(backbone):
     
     if backbone == 'resnext':
         return torch.hub.load('XingangPan/IBN-Net', 'resnext101_ibn_a', pretrained=True)
+
+    if backbone == 'seresnet':
+        return torch.hub.load('XingangPan/IBN-Net', 'se_resnet101_ibn_a', pretrained=True)
+
+
+    if backbone == 'densenet':
+        return DenseNet.densenet169_ibn_a(pretrained=True)
 
 
 def make_model(backbone, num_classes):

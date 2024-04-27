@@ -9,3 +9,11 @@ resnext
 contest.py
 ContestModel.py
 distance_distribution.py
+weights/
+sub/
+seresnet/
+mot_sub/
+gt/
+test/
+IBN_resnet/
+!asset/*

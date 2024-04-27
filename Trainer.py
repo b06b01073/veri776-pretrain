@@ -30,7 +30,7 @@ class ReIDTrainer:
         self.scheduler = lr_scheduler
 
 
-    def fit(self, train_loader, test_set, epochs, gt_index_path, name_query_path, jk_index_path, save_dir=None, check_init=False):
+    def fit(self, train_loader, test_set, epochs, gt_index_path, name_query_path, jk_index_path, save_dir, check_init=False):
         '''
             Train the model for `epochs` epochs, where each epoch is composed of a training step and a testing step 
 
@@ -62,21 +62,24 @@ class ReIDTrainer:
                 name_queries=name_queries
             )
 
-
+        best_val = 0
         for epoch in range(epochs):
             self.train(train_loader)
 
+            complete_hits, gt_hits = self.test(
+                test_set=test_set, 
+                gt_indices=gt_indices, 
+                jk_indices=jk_indices, 
+                name_queries=name_queries
+            )
+
+            if complete_hits + gt_hits > best_val:
+                print('model saved')
+                best_val = complete_hits + gt_hits
+                torch.save(self.net, os.path.join(save_dir, f'best.pth'))
+
             if self.scheduler is not None:
                 self.scheduler.step()
-
-            if save_dir and (epoch == 0 or (epoch + 1) % 3 == 0):
-                torch.save(self.net, os.path.join(save_dir, f'{epoch}.pth'))
-                self.test(
-                    test_set=test_set, 
-                    gt_indices=gt_indices, 
-                    jk_indices=jk_indices, 
-                    name_queries=name_queries
-                )
 
 
     def train(self, train_loader):
@@ -178,6 +181,8 @@ class ReIDTrainer:
 
 
         print(f'R@1 gt_hits: {gt_hits / len(name_queries)}, R@1 complete_hits: {complete_hits / len(name_queries)}')
+
+        return complete_hits, gt_hits
 
 
     def query_complete(self, sorted_args, complete, query_idx):

@@ -4,7 +4,7 @@ from torchvision import transforms
 IMAGENET_MEAN = [0.485, 0.456, 0.406]
 IMAGENET_STD = [0.229, 0.224, 0.225]
 
-IMAGE_SIZE = 256
+IMAGE_SIZE = 224
 
 
 def get_training_transform():
@@ -14,7 +14,7 @@ def get_training_transform():
         transforms.RandomHorizontalFlip(),
         transforms.Normalize(IMAGENET_MEAN, IMAGENET_STD),
         transforms.RandomCrop((IMAGE_SIZE, IMAGE_SIZE), padding=(8, 8)),
-        transforms.RandomErasing(scale=(0.02, 0.4)), # BoT setting
+        transforms.RandomErasing(scale=(0.02, 0.4), value=IMAGENET_MEAN), # BoT setting
     ])
 
     return transform

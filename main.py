@@ -7,23 +7,31 @@ from Trainer import ReIDTrainer
 from torch.optim import SGD
 import os
 from torch.nn import CrossEntropyLoss, TripletMarginLoss
-import DMT_scheduler
+import Scheduler
 import torch
+import numpy as np
+
 
 
 
 if __name__ == '__main__':
+    seed = 0xdc51ab
+    np.random.seed(0xdc51ab)
+    torch.manual_seed(0xdc51ab)
+    torch.cuda.manual_seed(0xdc51ab)
+
+
     parser = ArgumentParser()
     parser.add_argument('--dataset', type=str, default='../veri776')
     parser.add_argument('--workers', type=int, default=8)
-    parser.add_argument('--batch_size', '-b', type=int, default=16) # -b=20 is the limit on my machine
+    parser.add_argument('--batch_size', '-b', type=int, default=8) # -b=20 is the limit on my machine (12GB GPU memory)
     parser.add_argument('--lr', '-l', type=float, default=1e-2)
-    parser.add_argument('--epochs', '-e', type=int, default=50)
+    parser.add_argument('--epochs', '-e', type=int, default=30)
     parser.add_argument('--smoothing', type=float, default=0)
     parser.add_argument('--margin', '-m', type=float, default=0.6)
-    parser.add_argument('--save_dir', '-s', type=str)
+    parser.add_argument('--save_dir', '-s', type=str, required=True)
     parser.add_argument('--check_init', action='store_true')
-    parser.add_argument('--backbone', type=str, choices=['resnet', 'resnext'])
+    parser.add_argument('--backbone', type=str, choices=['resnet', 'resnext', 'seresnet', 'densenet', 'pretrained'], required=True)
 
     args = parser.parse_args()
 
@@ -41,7 +49,6 @@ if __name__ == '__main__':
         transform=Transforms.get_test_transform(),
     )
 
-    # neural network
     net = make_model(backbone=args.backbone, num_classes=576)
     print(net)
 
@@ -49,7 +56,7 @@ if __name__ == '__main__':
 
     # Trainer
     optim = SGD(net.parameters(), lr=args.lr)
-    scheduler = DMT_scheduler.get_scheduler(optim)
+    scheduler = Scheduler.get_scheduler(optim)
 
     trainer = ReIDTrainer(
         net=net,
