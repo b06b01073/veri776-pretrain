@@ -10,10 +10,10 @@ import DenseNet
 __all__ = ['IBN_A', 'resnet101_ibn_a', 'resnext101_ibn_a', 'densenet169_ibn_a', 'se_resnet101_ibn_a']
 
 model_urls = {
-    'densenet169_ibn_a': 'https://github.com/b06b01073/veri776-pretrain/releases/download/v1-hubconf/IBN_densenet.pth',
-    'se_resnet101_ibn_a': 'https://github.com/b06b01073/veri776-pretrain/releases/download/v1-hubconf/IBN_seresnet.pth',
-    'resnext101_ibn_a': 'https://github.com/b06b01073/veri776-pretrain/releases/download/v1-hubconf/IBN_resnext.pth',
-    # 'resnet101_ibn_a': ,
+    'densenet169_ibn_a': 'https://github.com/b06b01073/veri776-pretrain/releases/download/v3-hubconf/IBN_densenet.pth',
+    'se_resnet101_ibn_a': 'https://github.com/b06b01073/veri776-pretrain/releases/download/v3-hubconf/IBN_seresnet.pth',
+    'resnext101_ibn_a': 'https://github.com/b06b01073/veri776-pretrain/releases/download/v3-hubconf/IBN_resnext.pth',
+    'resnet101_ibn_a': 'https://github.com/b06b01073/veri776-pretrain/releases/download/v3-hubconf/IBN_resnet.pth',
 }
 
 def weights_init_kaiming(m):
@@ -163,7 +163,7 @@ def resnext101_ibn_a(print_net=False):
 
 def resnet101_ibn_a(print_net=False):
     model = IBN_A(backbone='resnet', pretrained=False)
-    model.load_state_dict(torch.hub.load_state_dict_from_url(model_urls['']))
+    model.load_state_dict(torch.hub.load_state_dict_from_url(model_urls['resnet101_ibn_a']))
 
     if print_net:
         print(model)
