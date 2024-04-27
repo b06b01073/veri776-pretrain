@@ -7,7 +7,7 @@ from collections import OrderedDict
 import DenseNet
 
 
-__all__ = ['IBN_A', 'resnet101_ibn_a', 'resnext101_ibn_a', 'densenet169_ibn_a', 'se_resnet101_ibn_a']
+__all__ = ['make_model', 'IBN_A', 'resnet101_ibn_a', 'resnext101_ibn_a', 'densenet169_ibn_a', 'se_resnet101_ibn_a']
 
 model_urls = {
     'densenet169_ibn_a': 'https://github.com/b06b01073/veri776-pretrain/releases/download/v3-hubconf/IBN_densenet.pth',
