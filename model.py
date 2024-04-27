@@ -7,6 +7,15 @@ from collections import OrderedDict
 import DenseNet
 
 
+__all__ = ['IBN_A', 'resnet101_ibn_a', 'resnext101_ibn_a', 'densenet169_ibn_a', 'se_resnet101_ibn_a']
+
+model_urls = {
+    'densenet169_ibn_a': 'https://github.com/b06b01073/veri776-pretrain/releases/download/v1-hubconf/IBN_densenet.pth',
+    'se_resnet101_ibn_a': 'https://github.com/b06b01073/veri776-pretrain/releases/download/v1-hubconf/IBN_seresnet.pth',
+    'resnext101_ibn_a': 'https://github.com/b06b01073/veri776-pretrain/releases/download/v1-hubconf/IBN_resnext.pth',
+    # 'resnet101_ibn_a': ,
+}
+
 def weights_init_kaiming(m):
     classname = m.__class__.__name__
     if classname.find('Linear') != -1:
@@ -65,11 +74,9 @@ class Resnet101IbnA(nn.Module):
 
 
 class IBN_A(nn.Module):
-    def __init__(self, backbone='pretrained', num_classes=576, embedding_dim=2048):
+    def __init__(self, backbone, pretrained=True, num_classes=576, embedding_dim=2048):
         super().__init__()
-        self.backbone = get_backbone(backbone)
-        print(self.backbone)
-
+        self.backbone = get_backbone(backbone, pretrained=pretrained)
 
         # the expected embedding space is \mathbb{R}^{2048}. resnet, seresnet, resnext satisfy this automatically
         if backbone == 'densenet':
@@ -98,21 +105,67 @@ class IBN_A(nn.Module):
 
 
 
-def get_backbone(backbone):
+def get_backbone(backbone, pretrained):
     print(f'using {backbone} as backbone')
+    
+    assert backbone in ['resnet', 'resnext', 'seresnet', 'densenet'], "no such backbone, we only support ['resnet', 'resnext', 'seresnet', 'densenet']"
+
     if backbone == 'resnet':
-        return torch.hub.load('XingangPan/IBN-Net', 'resnet101_ibn_a', pretrained=True)
+        return torch.hub.load('XingangPan/IBN-Net', 'resnet101_ibn_a', pretrained=pretrained)
     
     if backbone == 'resnext':
-        return torch.hub.load('XingangPan/IBN-Net', 'resnext101_ibn_a', pretrained=True)
+        return torch.hub.load('XingangPan/IBN-Net', 'resnext101_ibn_a', pretrained=pretrained)
 
     if backbone == 'seresnet':
-        return torch.hub.load('XingangPan/IBN-Net', 'se_resnet101_ibn_a', pretrained=True)
+        return torch.hub.load('XingangPan/IBN-Net', 'se_resnet101_ibn_a', pretrained=pretrained)
 
 
     if backbone == 'densenet':
-        return DenseNet.densenet169_ibn_a(pretrained=True)
-
+        return DenseNet.densenet169_ibn_a(pretrained=pretrained)
+    
 
 def make_model(backbone, num_classes):
     return IBN_A(backbone, num_classes)
+
+
+
+
+def densenet169_ibn_a(print_net=False):
+    model = IBN_A(backbone='densenet', pretrained=False)
+    model.load_state_dict(torch.hub.load_state_dict_from_url(model_urls['densenet169_ibn_a']))
+
+    if print_net:
+        print(model)
+
+    return model
+
+
+
+def se_resnet101_ibn_a(print_net=False):
+    model = IBN_A(backbone='seresnet', pretrained=False)
+    model.load_state_dict(torch.hub.load_state_dict_from_url(model_urls['se_resnet101_ibn_a']))
+
+    if print_net:
+        print(model)
+
+    return model
+
+
+def resnext101_ibn_a(print_net=False):
+    model = IBN_A(backbone='resnext', pretrained=False)
+    model.load_state_dict(torch.hub.load_state_dict_from_url(model_urls['resnext101_ibn_a']))
+
+    if print_net:
+        print(model)
+
+    return model
+
+
+def resnet101_ibn_a(print_net=False):
+    model = IBN_A(backbone='resnet', pretrained=False)
+    model.load_state_dict(torch.hub.load_state_dict_from_url(model_urls['']))
+
+    if print_net:
+        print(model)
+
+    return model

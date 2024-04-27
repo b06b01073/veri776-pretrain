@@ -17,3 +17,9 @@ gt/
 test/
 IBN_resnet/
 !asset/*
+*.pth
+convert.py
+evaluate.py
+test.py
+tmp/
+to_state_dict.py
