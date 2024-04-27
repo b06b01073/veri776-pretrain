@@ -2,7 +2,6 @@ from tqdm import tqdm
 import torch
 import os
 from einops import rearrange
-import torchvision
 
 class ReIDTrainer:
     '''
@@ -76,7 +75,7 @@ class ReIDTrainer:
             if complete_hits + gt_hits > best_val:
                 print('model saved')
                 best_val = complete_hits + gt_hits
-                torch.save(self.net, os.path.join(save_dir, f'best.pth'))
+                torch.save(self.net.state_dict(), os.path.join(save_dir, f'best.pth'))
 
             if self.scheduler is not None:
                 self.scheduler.step()

@@ -1,7 +1,6 @@
 from argparse import ArgumentParser
 import veri776
 import Transforms
-from termcolor import cprint
 from model import make_model
 from Trainer import ReIDTrainer
 from torch.optim import SGD
@@ -16,9 +15,9 @@ import numpy as np
 
 if __name__ == '__main__':
     seed = 0xdc51ab
-    np.random.seed(0xdc51ab)
-    torch.manual_seed(0xdc51ab)
-    torch.cuda.manual_seed(0xdc51ab)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
 
 
     parser = ArgumentParser()
