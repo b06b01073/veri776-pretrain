@@ -29,7 +29,7 @@ class ReIDTrainer:
         self.scheduler = lr_scheduler
 
 
-    def fit(self, train_loader, test_set, epochs, gt_index_path, name_query_path, jk_index_path, save_dir, check_init=False):
+    def fit(self, train_loader, test_set, epochs, gt_index_path, name_query_path, jk_index_path, save_dir, early_stopping, check_init=False):
         '''
             Train the model for `epochs` epochs, where each epoch is composed of a training step and a testing step 
 
@@ -40,6 +40,7 @@ class ReIDTrainer:
                 name_query_path (str): the path to name_query.txt under veri776 root folder
                 save_dir (str): path to save the model
                 check_init (boolean): if true, then test the model with initial weight
+                early_stopping (int): if the performance on validation set stop improving for a continuous `early_stopping` epochs, the `fit` method returns control
         '''
 
         # if the save if provided and the path hasn't existed yet
@@ -62,6 +63,8 @@ class ReIDTrainer:
             )
 
         best_val = 0
+        patience = 0
+
         for epoch in range(epochs):
             self.train(train_loader)
 
@@ -75,10 +78,15 @@ class ReIDTrainer:
             if complete_hits + gt_hits > best_val:
                 print('model saved')
                 best_val = complete_hits + gt_hits
+                patience = 0
                 torch.save(self.net.state_dict(), os.path.join(save_dir, f'best.pth'))
 
             if self.scheduler is not None:
                 self.scheduler.step()
+
+            patience += 1
+            if patience >= early_stopping:
+                return
 
 
     def train(self, train_loader):

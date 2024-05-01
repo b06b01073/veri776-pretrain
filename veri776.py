@@ -33,14 +33,14 @@ def parse_xml(xml_path):
     
 
 
-def get_veri776_train(veri776_path, num_workers, batch_size, transform):
+def get_veri776_train(veri776_path, num_workers, batch_size, transform, drop_last=False, shuffle=False):
     
     img_paths, vehicle_ids, class_map = parse_xml(os.path.join(veri776_path, 'train_label.xml'))
     img_paths = [os.path.join(veri776_path, 'image_train', path) for path in img_paths]
     train_set = Veri776Train(img_paths, vehicle_ids, class_map, transform)
 
 
-    return DataLoader(train_set, num_workers=num_workers, batch_size=batch_size)
+    return DataLoader(train_set, num_workers=num_workers, batch_size=batch_size, drop_last=drop_last, shuffle=shuffle)
    
 
 def get_veri776_test(veri_776_path, transform):

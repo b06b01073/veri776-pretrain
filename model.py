@@ -5,6 +5,7 @@ import os
 import torch.nn.functional as F
 from collections import OrderedDict
 import DenseNet
+from torchvision.models.swin_transformer import swin_b, Swin_B_Weights
 
 
 __all__ = ['make_model', 'IBN_A', 'resnet101_ibn_a', 'resnext101_ibn_a', 'densenet169_ibn_a', 'se_resnet101_ibn_a']
@@ -124,9 +125,37 @@ def get_backbone(backbone, pretrained):
         return DenseNet.densenet169_ibn_a(pretrained=pretrained)
     
 
-def make_model(backbone, num_classes):
-    return IBN_A(backbone, num_classes)
+class SwinReID(nn.Module):
+    def __init__(self, num_classes, embedding_dim=2048, imagenet_weight=True):
+        super().__init__()
 
+        self.swin = swin_b(weights=Swin_B_Weights.IMAGENET1K_V1 if imagenet_weight else None)
+
+        self.swin.head = nn.Linear(self.swin.head.in_features, embedding_dim)
+        self.bottleneck = nn.BatchNorm1d(embedding_dim)
+        self.bottleneck.bias.requires_grad_(False)  # no shift
+
+        self.classifier = nn.Linear(embedding_dim, num_classes, bias=False)
+
+        self.bottleneck.apply(weights_init_kaiming)
+        self.classifier.apply(weights_init_classifier)
+
+
+    def forward(self, x):
+        f_t = self.swin(x) # features for triplet loss
+        f_i = self.bottleneck(f_t) # features for inference
+
+        out = self.classifier(f_i)  # features for id loss
+
+        return f_t, f_i, out
+
+
+
+def make_model(backbone, num_classes):
+    if backbone == 'swin':
+        return SwinReID(num_classes)
+
+    return IBN_A(backbone, num_classes)
 
 
 
