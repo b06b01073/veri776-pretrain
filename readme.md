@@ -78,25 +78,17 @@ for img_path in img_paths:
 │   ├── test_track_VeRi.txt
 │   └── train_label.xml
 ├── veri776ReID
-│   ├── DMT_scheduler.py
-│   ├── IBN_Net.py
-│   ├── Trainer.py
-│   ├── Transforms.py
-│   ├── asset
-│   ├── main.py
-│   ├── model.py
-│   ├── readme.md
-│   ├── requirements.txt
-│   ├── tSNE.py
-│   ├── veri776.py
-│   └── weights
-.
-.
-.
+│   ├── train_cnn.py
+│   ├── train_swin.py
+.   .
+.   .
+.   .
 ```
 
 在這個例子裡面 `veri776` 是 veri776 資料集的 root folder (請勿更動內部檔案命名，否則有些檔案會抓不到)，而 veri776ReID 則是這個 GitHub 的 repo。那麼要訓練模型的指令就會是:
 
 ```
-$ python veri776ReID/main.py --dataset=veri776 --backbone=resnet
+$ python veri776ReID/train_cnn.py --dataset=veri776 --backbone=resnet --save_dir=<path to directory>
+
+$ python veri776ReID/train_swin.py --dataset=veri776 --save_dir=<path to directory>
 ```
