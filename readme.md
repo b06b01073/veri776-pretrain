@@ -50,6 +50,8 @@ for img_path in img_paths:
     # 以下可以把 feature 拿來做你想做的事情
 ```
 
+> [!WARNING]  
+> 在初次使用 `torch.hub.load` 時，這份 repo 會被自動下載到 local 端的 cache 中 (例如你的 linux 中的 ~/.cache/ 資料夾底下)，這樣的預設行為可以避免每次都要從 repo 抓資料。然而，當這份 repo 有新的 commits 時，local 端的檔案不會被更新，如果你發現有奇怪的 bug 出現時 (GitHub 上明明有的 function，你的 local 端卻一直報錯說找不到該 function)，就需要將 local 端的 cache 清理掉。
 
 ### In case you want to train the model
 如果你有想要 train 這個 model，或做一些實驗，請先[下載](https://drive.google.com/open?id=0B0o1ZxGs_oVZWmtFdXpqTGl3WUU) veri776 資料集，並且在 `main.py` 的 `--dataset` 參數提供 veri776 的 root folder。
