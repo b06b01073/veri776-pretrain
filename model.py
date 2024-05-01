@@ -15,6 +15,7 @@ model_urls = {
     'se_resnet101_ibn_a': 'https://github.com/b06b01073/veri776-pretrain/releases/download/v3-hubconf/IBN_seresnet.pth',
     'resnext101_ibn_a': 'https://github.com/b06b01073/veri776-pretrain/releases/download/v3-hubconf/IBN_resnext.pth',
     'resnet101_ibn_a': 'https://github.com/b06b01073/veri776-pretrain/releases/download/v3-hubconf/IBN_resnet.pth',
+    'swin_reid': 'https://github.com/b06b01073/veri776-pretrain/releases/download/v3-hubconf/SwinReID.pth'
 }
 
 def weights_init_kaiming(m):
@@ -193,6 +194,16 @@ def resnext101_ibn_a(print_net=False):
 def resnet101_ibn_a(print_net=False):
     model = IBN_A(backbone='resnet', pretrained=False)
     model.load_state_dict(torch.hub.load_state_dict_from_url(model_urls['resnet101_ibn_a']))
+
+    if print_net:
+        print(model)
+
+    return model
+
+
+def swin_reid(print_net=False):
+    model = SwinReID(num_classes=576)
+    model.load_state_dict(torch.hub.load_state_dict_from_url(model_urls['swin_reid']))
 
     if print_net:
         print(model)
