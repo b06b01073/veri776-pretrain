@@ -31,7 +31,7 @@ Junk images 是指與 probe 於同一個鏡頭下拍的車，可能會出現高�
 
 ```python=
 # load the weights of pretrained model, see the release 
-# the options of models are ['resnet101_ibn_a', 'resnext101_ibn_a', 'densenet169_ibn_a', 'se_resnet101_ibn_a'] 
+# the options of models are ['resnet101_ibn_a', 'resnext101_ibn_a', 'densenet169_ibn_a', 'se_resnet101_ibn_a', 'swin_reid'] 
 net = torch.hub.load('b06b01073/veri776-pretrain', 'resnet101_ibn_a') 
 net = net.to('cpu')
 net.eval() # 別忘了設成 eval model，避免 BatchNorm 追蹤 running mean
