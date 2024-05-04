@@ -15,7 +15,13 @@ model_urls = {
     'se_resnet101_ibn_a': 'https://github.com/b06b01073/veri776-pretrain/releases/download/v3-hubconf/IBN_seresnet.pth',
     'resnext101_ibn_a': 'https://github.com/b06b01073/veri776-pretrain/releases/download/v3-hubconf/IBN_resnext.pth',
     'resnet101_ibn_a': 'https://github.com/b06b01073/veri776-pretrain/releases/download/v3-hubconf/IBN_resnet.pth',
-    'swin_reid': 'https://github.com/b06b01073/veri776-pretrain/releases/download/v3-hubconf/SwinReID.pth'
+    'swin_reid': 'https://github.com/b06b01073/veri776-pretrain/releases/download/v3-hubconf/SwinReID.pth',
+
+    'densenet_169_ibn_a_finetuned': 'https://github.com/b06b01073/veri776-pretrain/releases/download/v4-fine-tuned/IBN_densenet_cos.pth',
+    'se_resnet101_ibn_a_finetuned': 'https://github.com/b06b01073/veri776-pretrain/releases/download/v4-fine-tuned/IBN_seresnet_cos.pth',
+    'resnext101_ibn_a_finetuned': 'https://github.com/b06b01073/veri776-pretrain/releases/download/v4-fine-tuned/IBN_resnext_cos.pth',
+    'resnet101_ibn_a_finetuned': 'https://github.com/b06b01073/veri776-pretrain/releases/download/v4-fine-tuned/IBN_resnet_cos.pth',
+    'swin_reid_finetuned': 'https://github.com/b06b01073/veri776-pretrain/releases/download/v4-fine-tuned/SwinReID_cos.pth',
 }
 
 def weights_init_kaiming(m):
@@ -108,7 +114,6 @@ class IBN_A(nn.Module):
 
 
 def get_backbone(backbone, pretrained):
-    print(f'using {backbone} as backbone')
     
     assert backbone in ['resnet', 'resnext', 'seresnet', 'densenet'], "no such backbone, we only support ['resnet', 'resnext', 'seresnet', 'densenet']"
 
@@ -153,6 +158,8 @@ class SwinReID(nn.Module):
 
 
 def make_model(backbone, num_classes):
+    print(f'using {backbone} as backbone')
+
     if backbone == 'swin':
         return SwinReID(num_classes)
 
@@ -160,20 +167,36 @@ def make_model(backbone, num_classes):
 
 
 
-def densenet169_ibn_a(print_net=False):
+def densenet169_ibn_a(print_net=False, fine_tuned=False):
     model = IBN_A(backbone='densenet', pretrained=False)
-    model.load_state_dict(torch.hub.load_state_dict_from_url(model_urls['densenet169_ibn_a']))
+    
+    if fine_tuned:
+        print('using fine tuned model')
+        model.classifier = nn.Linear(in_features=2048, out_features=3440, bias=False)
+        model.load_state_dict(torch.hub.load_state_dict_from_url(model_urls['densenet_169_ibn_a_finetuned']))
+    else:
+        model.load_state_dict(torch.hub.load_state_dict_from_url(model_urls['densenet169_ibn_a']))
 
     if print_net:
         print(model)
+
 
     return model
 
 
 
-def se_resnet101_ibn_a(print_net=False):
+def se_resnet101_ibn_a(print_net=False, fine_tuned=False):
     model = IBN_A(backbone='seresnet', pretrained=False)
-    model.load_state_dict(torch.hub.load_state_dict_from_url(model_urls['se_resnet101_ibn_a']))
+    
+    if fine_tuned:
+        print('using fine tuned model')
+        model.classifier = nn.Linear(in_features=2048, out_features=3440, bias=False)
+        model.load_state_dict(torch.hub.load_state_dict_from_url(model_urls['se_resnet101_ibn_a_finetuned']))
+    else:
+        model.load_state_dict(torch.hub.load_state_dict_from_url(model_urls['se_resnet101_ibn_a']))
+
+
+        
 
     if print_net:
         print(model)
@@ -181,9 +204,15 @@ def se_resnet101_ibn_a(print_net=False):
     return model
 
 
-def resnext101_ibn_a(print_net=False):
+def resnext101_ibn_a(print_net=False, fine_tuned=False):
     model = IBN_A(backbone='resnext', pretrained=False)
-    model.load_state_dict(torch.hub.load_state_dict_from_url(model_urls['resnext101_ibn_a']))
+        
+    if fine_tuned:
+        print('using fine tuned model')
+        model.classifier = nn.Linear(in_features=2048, out_features=3440, bias=False)
+        model.load_state_dict(torch.hub.load_state_dict_from_url(model_urls['resnext101_ibn_a_finetuned']))
+    else:
+        model.load_state_dict(torch.hub.load_state_dict_from_url(model_urls['resnext101_ibn_a']))
 
     if print_net:
         print(model)
@@ -191,9 +220,15 @@ def resnext101_ibn_a(print_net=False):
     return model
 
 
-def resnet101_ibn_a(print_net=False):
+def resnet101_ibn_a(print_net=False, fine_tuned=False):
     model = IBN_A(backbone='resnet', pretrained=False)
-    model.load_state_dict(torch.hub.load_state_dict_from_url(model_urls['resnet101_ibn_a']))
+
+    if fine_tuned:
+        print('using fine tuned model')
+        model.classifier = nn.Linear(in_features=2048, out_features=3440, bias=False)
+        model.load_state_dict(torch.hub.load_state_dict_from_url(model_urls['resnet101_ibn_a_finetuned']))
+    else:
+        model.load_state_dict(torch.hub.load_state_dict_from_url(model_urls['resnet101_ibn_a']))
 
     if print_net:
         print(model)
@@ -201,9 +236,15 @@ def resnet101_ibn_a(print_net=False):
     return model
 
 
-def swin_reid(print_net=False):
+def swin_reid(print_net=False, fine_tuned=False):
     model = SwinReID(num_classes=576)
-    model.load_state_dict(torch.hub.load_state_dict_from_url(model_urls['swin_reid']))
+    
+    if fine_tuned:
+        print('using fine tuned model')
+        model.classifier = nn.Linear(in_features=2048, out_features=3440, bias=False)
+        model.load_state_dict(torch.hub.load_state_dict_from_url(model_urls['swin_reid_finetuned']))
+    else:
+        model.load_state_dict(torch.hub.load_state_dict_from_url(model_urls['swin_reid']))
 
     if print_net:
         print(model)
