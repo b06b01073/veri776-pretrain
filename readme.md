@@ -4,12 +4,8 @@
 
 這個 repo 存放了使用 [veri776 dataset](https://vehiclereid.github.io/VeRi/) 進行 pretraining 的 code 以及 pretrained model。
 
-模型的 backbone 使用 [ResNet101-ibn-a](https://pytorch.org/hub/pytorch_vision_ibnnet/)，loss function 使用 cross entropy loss 以及 triplet loss，完整的資料可以在 [這篇 paper](https://arxiv.org/pdf/1903.07071.pdf) 找到。
+模型的 backbone 使用數種 IBN net 以及 Swin Transformer，loss function 使用 cross entropy loss 以及 triplet loss，完整的資料可以在 [這篇 paper](https://arxiv.org/pdf/1903.07071.pdf) 找到。
 
-這個 repo 與上述 paper 的差異有以下幾點:
-1. last stride 並未設成 1
-2. 並未加入 center loss (加了以後在訓練上 loss 直接變成 NaN)
-3. training epochs 與 learning rate scheduler 不同
 
 結果在 veri776 測試集上可以達到 98 rank 1 accuracy (含 junk images)，以及 78 rank 1 accuracy (不含 junk images)。
 
@@ -25,14 +21,17 @@ Junk images 是指與 probe 於同一個鏡頭下拍的車，可能會出現高�
 
 
 ## About the pretrained model
-在這個 repo 的 [release](https://github.com/b06b01073/veri776-pretrain/releases/tag/v3-hubconf) 有提供 pretrained model，可以直接使用。
+在這個 repo 的:
+* [v3 release](https://github.com/b06b01073/veri776-pretrain/releases/tag/v3-hubconf) 有提供 pretrained model，可以直接使用
+* [v4 release](https://github.com/b06b01073/veri776-pretrain/releases/tag/v4-fine-tuned) 有提供 fine-tuned model
+
 
 使用範例如下:
 
 ```python=
 # load the weights of pretrained model, see the release 
 # the options of models are ['resnet101_ibn_a', 'resnext101_ibn_a', 'densenet169_ibn_a', 'se_resnet101_ibn_a', 'swin_reid'] 
-net = torch.hub.load('b06b01073/veri776-pretrain', 'resnet101_ibn_a') 
+net = torch.hub.load('b06b01073/veri776-pretrain', 'swin_reid', fine_tuned=True) # 將 fine_tuned 設為 True 會 load fine-tuned 後的 model
 net = net.to('cpu')
 net.eval() # 別忘了設成 eval model，避免 BatchNorm 追蹤 running mean
 
@@ -52,6 +51,11 @@ for img_path in img_paths:
 
 > [!WARNING]  
 > 在初次使用 `torch.hub.load` 時，這份 repo 會被自動下載到 local 端的 cache 中 (例如你的 linux 中的 ~/.cache/ 資料夾底下)，這樣的預設行為可以避免每次都要從 repo 抓資料。然而，當這份 repo 有新的 commits 時，local 端的檔案不會被更新，如果你發現有奇怪的 bug 出現時 (GitHub 上明明有的 function，你的 local 端卻一直報錯說找不到該 function)，就需要將 local 端的 cache 清理掉。
+
+
+> [!WARNING]  
+> 在 `fine_tuned = True` 的選項中會下載使用 cosine 距離版本的 model
+
 
 ### In case you want to train the model
 如果你有想要 train 這個 model，或做一些實驗，請先[下載](https://drive.google.com/open?id=0B0o1ZxGs_oVZWmtFdXpqTGl3WUU) veri776 資料集，並且在 `main.py` 的 `--dataset` 參數提供 veri776 的 root folder。
