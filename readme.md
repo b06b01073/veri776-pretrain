@@ -60,7 +60,7 @@ for img_path in img_paths:
 > 在 `fine_tuned = True` 的版本中應該要盡量使用 cosine 距離計算 embedding 之間的距離。你會需要的 model output 會來自第二個，其他的可以省略。Example: use `_, embeddings, _ = net(input_batch)`。
 
 ### In case you want to train the model
-如果你有想要 train 這個 model，或做一些實驗，請先[下載](https://drive.google.com/open?id=0B0o1ZxGs_oVZWmtFdXpqTGl3WUU) veri776 資料集，並且在 `main.py` 的 `--dataset` 參數提供 veri776 的 root folder。
+如果你有想要 train 這個 model，或做一些實驗，請先下載 veri776 資料集，並且在 `main.py` 的 `--dataset` 參數提供 veri776 的 root folder。
 
 ```
 .
