@@ -16,6 +16,8 @@ model_urls = {
     'resnext101_ibn_a': 'https://github.com/b06b01073/veri776-pretrain/releases/download/v3-hubconf/IBN_resnext.pth',
     'resnet101_ibn_a': 'https://github.com/b06b01073/veri776-pretrain/releases/download/v3-hubconf/IBN_resnet.pth',
     'swin_reid': 'https://github.com/b06b01073/veri776-pretrain/releases/download/v3-hubconf/SwinReID.pth',
+    'resnet34_ibn_a': 'https://github.com/b06b01073/veri776-pretrain/releases/download/v3-hubconf/IBN_resnet34.pth',
+
 
     'densenet_169_ibn_a_finetuned': 'https://github.com/b06b01073/veri776-pretrain/releases/download/v4-fine-tuned/IBN_densenet_cos.pth',
     'se_resnet101_ibn_a_finetuned': 'https://github.com/b06b01073/veri776-pretrain/releases/download/v4-fine-tuned/IBN_seresnet_cos.pth',
@@ -115,7 +117,7 @@ class IBN_A(nn.Module):
 
 def get_backbone(backbone, pretrained):
     
-    assert backbone in ['resnet', 'resnext', 'seresnet', 'densenet'], "no such backbone, we only support ['resnet', 'resnext', 'seresnet', 'densenet']"
+    assert backbone in ['resnet', 'resnext', 'seresnet', 'densenet', 'resnet34'], "no such backbone, we only support ['resnet', 'resnext', 'seresnet', 'densenet', 'resnet34]"
 
     if backbone == 'resnet':
         return torch.hub.load('XingangPan/IBN-Net', 'resnet101_ibn_a', pretrained=pretrained)
@@ -125,6 +127,9 @@ def get_backbone(backbone, pretrained):
 
     if backbone == 'seresnet':
         return torch.hub.load('XingangPan/IBN-Net', 'se_resnet101_ibn_a', pretrained=pretrained)
+
+    if backbone == 'resnet34':
+        return torch.hub.load('XingangPan/IBN-Net', 'resnet34_ibn_a', pretrained=pretrained)
 
 
     if backbone == 'densenet':
@@ -157,13 +162,14 @@ class SwinReID(nn.Module):
 
 
 
-def make_model(backbone, num_classes):
+def make_model(backbone, num_classes, embedding_dim=2048):
     print(f'using {backbone} as backbone')
 
     if backbone == 'swin':
         return SwinReID(num_classes)
 
-    return IBN_A(backbone, num_classes)
+
+    return IBN_A(backbone, num_classes, embedding_dim=embedding_dim)
 
 
 
@@ -229,6 +235,21 @@ def resnet101_ibn_a(print_net=False, fine_tuned=False):
         model.load_state_dict(torch.hub.load_state_dict_from_url(model_urls['resnet101_ibn_a_finetuned']))
     else:
         model.load_state_dict(torch.hub.load_state_dict_from_url(model_urls['resnet101_ibn_a']))
+
+    if print_net:
+        print(model)
+
+    return model
+
+
+def resnet34_ibn_a(print_net=False, fine_tuned=False):
+    model = IBN_A(backbone='resnet34', pretrained=False)
+
+    if fine_tuned:
+        print('no implemented yet')
+    else:
+        model.load_state_dict(torch.hub.load_state_dict_from_url(model_urls['resnet34_ibn_a']))
+
 
     if print_net:
         print(model)

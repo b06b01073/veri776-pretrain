@@ -23,14 +23,16 @@ if __name__ == '__main__':
     parser = ArgumentParser()
     parser.add_argument('--dataset', type=str, default='../veri776')
     parser.add_argument('--workers', type=int, default=8)
-    parser.add_argument('--batch_size', '-b', type=int, default=8) # -b=20 is the limit on my machine (12GB GPU memory)
+    parser.add_argument('--batch_size', '-b', type=int, default=16) # -b=20 is the limit on my machine (12GB GPU memory)
     parser.add_argument('--lr', '-l', type=float, default=1e-2)
     parser.add_argument('--epochs', '-e', type=int, default=30)
     parser.add_argument('--smoothing', type=float, default=0)
     parser.add_argument('--margin', '-m', type=float, default=0.6)
     parser.add_argument('--save_dir', '-s', type=str, required=True)
     parser.add_argument('--check_init', action='store_true')
-    parser.add_argument('--backbone', type=str, choices=['resnet', 'resnext', 'seresnet', 'densenet', 'pretrained'], required=True)
+    parser.add_argument('--backbone', type=str, choices=['resnet', 'resnext', 'seresnet', 'densenet', 'resnet34'], required=True)
+    parser.add_argument('--embedding_dim', type=int, default=2048)
+    parser.add_argument('--early_stopping', type=int, default=6)
 
     args = parser.parse_args()
 
@@ -48,8 +50,7 @@ if __name__ == '__main__':
         transform=Transforms.get_test_transform(),
     )
 
-    net = make_model(backbone=args.backbone, num_classes=576)
-    print(net)
+    net = make_model(backbone=args.backbone, num_classes=576, embedding_dim=args.embedding_dim)
 
 
 
@@ -73,6 +74,7 @@ if __name__ == '__main__':
         name_query_path=os.path.join(args.dataset, 'name_query.txt'),
         jk_index_path=os.path.join(args.dataset, 'jk_index.txt'),
         epochs=args.epochs,
+        early_stopping=args.early_stopping,
         save_dir=args.save_dir,
         check_init=args.check_init
     )
