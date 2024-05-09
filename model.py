@@ -243,7 +243,7 @@ def resnet101_ibn_a(print_net=False, fine_tuned=False):
 
 
 def resnet34_ibn_a(print_net=False, fine_tuned=False):
-    model = IBN_A(backbone='resnet34', pretrained=False)
+    model = IBN_A(backbone='resnet34', pretrained=False, embedding_dim=512)
 
     if fine_tuned:
         print('no implemented yet')
