@@ -8,7 +8,7 @@ import DenseNet
 from torchvision.models.swin_transformer import swin_b, Swin_B_Weights
 
 
-__all__ = ['make_model', 'IBN_A', 'resnet101_ibn_a', 'resnext101_ibn_a', 'densenet169_ibn_a', 'se_resnet101_ibn_a', 'swin_reid']
+__all__ = ['make_model', 'IBN_A', 'resnet101_ibn_a', 'resnext101_ibn_a', 'densenet169_ibn_a', 'se_resnet101_ibn_a', 'swin_reid', 'resnet34_ibn_a']
 
 model_urls = {
     'densenet169_ibn_a': 'https://github.com/b06b01073/veri776-pretrain/releases/download/v3-hubconf/IBN_densenet.pth',
@@ -24,6 +24,7 @@ model_urls = {
     'resnext101_ibn_a_finetuned': 'https://github.com/b06b01073/veri776-pretrain/releases/download/v4-fine-tuned/IBN_resnext_cos.pth',
     'resnet101_ibn_a_finetuned': 'https://github.com/b06b01073/veri776-pretrain/releases/download/v4-fine-tuned/IBN_resnet_cos.pth',
     'swin_reid_finetuned': 'https://github.com/b06b01073/veri776-pretrain/releases/download/v4-fine-tuned/SwinReID_cos.pth',
+    'resnet34_ibn_a_finetuned': 'https://github.com/b06b01073/veri776-pretrain/releases/download/v4-fine-tuned/IBN_resnet34_cos.pth'
 }
 
 def weights_init_kaiming(m):
@@ -246,7 +247,8 @@ def resnet34_ibn_a(print_net=False, fine_tuned=False):
     model = IBN_A(backbone='resnet34', pretrained=False, embedding_dim=512)
 
     if fine_tuned:
-        print('no implemented yet')
+        model.classifier = nn.Linear(in_features=512, out_features=3421, bias=False)
+        model.load_state_dict(torch.hub.load_state_dict_from_url(model_urls['resnet34_ibn_a_finetuned']))
     else:
         model.load_state_dict(torch.hub.load_state_dict_from_url(model_urls['resnet34_ibn_a']))
 
