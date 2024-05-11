@@ -7,7 +7,7 @@ class ReIDTrainer:
     '''
         A wrapper class that launches the training process 
     '''
-    def __init__(self, net, ce_loss_fn=None, triplet_loss_fn=None, optimizer=None, lr_scheduler=None, device='cpu'):
+    def __init__(self, net, ce_loss_fn=None, triplet_loss_fn=None, center_loss_fn=None, optimizer=None, lr_scheduler=None, device='cpu'):
         '''
             Args: 
                 net (nn.Module): the network to be trained 
@@ -24,6 +24,7 @@ class ReIDTrainer:
 
         self.ce_loss_fn = ce_loss_fn
         self.triplet_loss_fn = triplet_loss_fn
+        self.center_loss_fn = center_loss_fn
 
         self.optimizer = optimizer
         self.scheduler = lr_scheduler
@@ -106,10 +107,10 @@ class ReIDTrainer:
             negatives = images[:, 2, :].squeeze()
 
             anchor_embeddings, _, anchor_out = self.net(anchors)
-            positvie_embeddings, _, positive_out = self.net(positvies)
+            positive_embeddings, _, positive_out = self.net(positvies)
             negative_embeddings, _, negative_out = self.net(negatives)
 
-            triplet_loss = self.triplet_loss_fn(anchor_embeddings, positvie_embeddings, negative_embeddings)
+            triplet_loss = self.triplet_loss_fn(anchor_embeddings, positive_embeddings, negative_embeddings)
 
             
             preds = rearrange([anchor_out, positive_out, negative_out], 't b e -> (b t) e')
@@ -117,9 +118,11 @@ class ReIDTrainer:
 
             ce_loss = self.ce_loss_fn(preds, labels_batch)
 
+            cent_preds = rearrange([anchor_embeddings, positive_embeddings, negative_embeddings], 't b e -> (b t) e')
+            cent_loss = self.center_loss_fn(cent_preds, labels_batch)
 
             self.optimizer.zero_grad()
-            loss = triplet_loss + ce_loss
+            loss = triplet_loss + ce_loss + 3.5e-4 * cent_loss
             loss.backward()
             self.optimizer.step()
 

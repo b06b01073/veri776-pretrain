@@ -174,13 +174,13 @@ def make_model(backbone, num_classes, embedding_dim=2048):
 
 
 
-def densenet169_ibn_a(print_net=False, fine_tuned=False):
+def densenet169_ibn_a(print_net=False, fine_tuned=False, device='cpu'):
     model = IBN_A(backbone='densenet', pretrained=False)
     
     if fine_tuned:
         print('using fine tuned model')
         model.classifier = nn.Linear(in_features=2048, out_features=3440, bias=False)
-        model.load_state_dict(torch.hub.load_state_dict_from_url(model_urls['densenet_169_ibn_a_finetuned']))
+        model.load_state_dict(torch.hub.load_state_dict_from_url(model_urls['densenet_169_ibn_a_finetuned'], map_location=torch.device(device)))
     else:
         model.load_state_dict(torch.hub.load_state_dict_from_url(model_urls['densenet169_ibn_a']))
 
@@ -192,13 +192,13 @@ def densenet169_ibn_a(print_net=False, fine_tuned=False):
 
 
 
-def se_resnet101_ibn_a(print_net=False, fine_tuned=False):
+def se_resnet101_ibn_a(print_net=False, fine_tuned=False, device='cpu'):
     model = IBN_A(backbone='seresnet', pretrained=False)
     
     if fine_tuned:
         print('using fine tuned model')
         model.classifier = nn.Linear(in_features=2048, out_features=3440, bias=False)
-        model.load_state_dict(torch.hub.load_state_dict_from_url(model_urls['se_resnet101_ibn_a_finetuned']))
+        model.load_state_dict(torch.hub.load_state_dict_from_url(model_urls['se_resnet101_ibn_a_finetuned'], map_location=torch.device(device)))
     else:
         model.load_state_dict(torch.hub.load_state_dict_from_url(model_urls['se_resnet101_ibn_a']))
 
@@ -211,13 +211,13 @@ def se_resnet101_ibn_a(print_net=False, fine_tuned=False):
     return model
 
 
-def resnext101_ibn_a(print_net=False, fine_tuned=False):
+def resnext101_ibn_a(print_net=False, fine_tuned=False, device='cpu'):
     model = IBN_A(backbone='resnext', pretrained=False)
         
     if fine_tuned:
         print('using fine tuned model')
         model.classifier = nn.Linear(in_features=2048, out_features=3440, bias=False)
-        model.load_state_dict(torch.hub.load_state_dict_from_url(model_urls['resnext101_ibn_a_finetuned']))
+        model.load_state_dict(torch.hub.load_state_dict_from_url(model_urls['resnext101_ibn_a_finetuned'], map_location=torch.device(device)))
     else:
         model.load_state_dict(torch.hub.load_state_dict_from_url(model_urls['resnext101_ibn_a']))
 
@@ -227,13 +227,13 @@ def resnext101_ibn_a(print_net=False, fine_tuned=False):
     return model
 
 
-def resnet101_ibn_a(print_net=False, fine_tuned=False):
+def resnet101_ibn_a(print_net=False, fine_tuned=False, device='cpu'):
     model = IBN_A(backbone='resnet', pretrained=False)
 
     if fine_tuned:
         print('using fine tuned model')
         model.classifier = nn.Linear(in_features=2048, out_features=3440, bias=False)
-        model.load_state_dict(torch.hub.load_state_dict_from_url(model_urls['resnet101_ibn_a_finetuned']))
+        model.load_state_dict(torch.hub.load_state_dict_from_url(model_urls['resnet101_ibn_a_finetuned'], map_location=torch.device(device)))
     else:
         model.load_state_dict(torch.hub.load_state_dict_from_url(model_urls['resnet101_ibn_a']))
 
@@ -243,7 +243,7 @@ def resnet101_ibn_a(print_net=False, fine_tuned=False):
     return model
 
 
-def resnet34_ibn_a(print_net=False, fine_tuned=False):
+def resnet34_ibn_a(print_net=False, fine_tuned=False, device='cpu'):
     model = IBN_A(backbone='resnet34', pretrained=False, embedding_dim=512)
 
     if fine_tuned:
@@ -259,13 +259,13 @@ def resnet34_ibn_a(print_net=False, fine_tuned=False):
     return model
 
 
-def swin_reid(print_net=False, fine_tuned=False):
+def swin_reid(print_net=False, fine_tuned=False, device='cpu'):
     model = SwinReID(num_classes=576)
     
     if fine_tuned:
         print('using fine tuned model')
         model.classifier = nn.Linear(in_features=2048, out_features=3440, bias=False)
-        model.load_state_dict(torch.hub.load_state_dict_from_url(model_urls['swin_reid_finetuned']))
+        model.load_state_dict(torch.hub.load_state_dict_from_url(model_urls['swin_reid_finetuned'], map_location=torch.device(device)))
     else:
         model.load_state_dict(torch.hub.load_state_dict_from_url(model_urls['swin_reid']))
 

@@ -6,6 +6,7 @@ from Trainer import ReIDTrainer
 from torch.optim import SGD
 import os
 from torch.nn import CrossEntropyLoss, TripletMarginLoss
+from CenterLoss import CenterLoss
 import Scheduler
 import torch
 import numpy as np
@@ -50,7 +51,8 @@ if __name__ == '__main__':
         transform=Transforms.get_test_transform(),
     )
 
-    net = make_model(backbone=args.backbone, num_classes=576, embedding_dim=args.embedding_dim)
+    net = make_model(backbone=args.backbone, num_classes=576)
+    print(net)
 
 
 
@@ -62,6 +64,7 @@ if __name__ == '__main__':
         net=net,
         ce_loss_fn=CrossEntropyLoss(label_smoothing=args.smoothing),
         triplet_loss_fn=TripletMarginLoss(margin=args.margin),
+        center_loss_fn=CenterLoss(num_classes=576, feat_dim=args.embedding_dim, use_gpu=True), 
         optimizer=optim,
         lr_scheduler=scheduler,
         device='cuda' if torch.cuda.is_available() else 'cpu',
