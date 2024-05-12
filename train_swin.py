@@ -6,6 +6,7 @@ from Trainer import ReIDTrainer
 from torch.optim import AdamW
 import os
 from torch.nn import CrossEntropyLoss, TripletMarginLoss
+from CenterLoss import CenterLoss
 import torch
 import numpy as np
 
@@ -31,6 +32,7 @@ if __name__ == '__main__':
     parser.add_argument('--save_dir', '-s', type=str, required=True)
     parser.add_argument('--check_init', action='store_true')
     parser.add_argument('--early_stopping', type=int, default=6)
+    parser.add_argument('--embedding_dim', type=int, default=2048)
 
     args = parser.parse_args()
 
@@ -60,6 +62,7 @@ if __name__ == '__main__':
         net=net,
         ce_loss_fn=CrossEntropyLoss(label_smoothing=args.smoothing),
         triplet_loss_fn=TripletMarginLoss(margin=args.margin),
+        center_loss_fn=CenterLoss(num_classes=576, feat_dim=args.embedding_dim, use_gpu=True), 
         optimizer=optim,
         device='cuda' if torch.cuda.is_available() else 'cpu',
     )
